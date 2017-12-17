@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Random = UnityEngine.Random;
 using UnityEngine;
 using Zenject;
 
@@ -25,6 +27,9 @@ public class Enemy : MonoBehaviour
     Cell playerPosition;
     float speed;
 
+    bool isMoving;
+    float t;
+    Vector3 previousPosition;
     public float Speed
     {
         get
@@ -40,10 +45,41 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        //zu
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log("Azu");
             CheckPlayerPosition();
+        }
+
+        if (!isMoving)
+        {
+            t = 0;
+            previousPosition = transform.position;
+            FindPath(playerPosition);
+            isMoving = true;
+        }
+        else
+        {
+            if (playerPosition.IsWalkable)
+            {
+                Move();
+            }
+            else
+            {
+                isMoving = false;
+            }
+        }
+    }
+
+    void Move()
+    {
+        t = Time.deltaTime * speed;
+        transform.position = Vector3.MoveTowards(transform.position, playerPosition.GetPositionVector3(), t);
+
+        if (transform.position == playerPosition.GetPositionVector3())
+        {
+            isMoving = false;
         }
     }
     void CheckPlayerPosition()
@@ -56,5 +92,10 @@ public class Enemy : MonoBehaviour
         x = Mathf.Clamp(x, 1, _config.Levels[_gameManager.CurrentLevel].SizeX);
         y = Mathf.Clamp(y, 1, _config.Levels[_gameManager.CurrentLevel].SizeY);
         playerPosition = _fieldManager.GetCellFromPosition(new Vector2(x, y));
+    }
+
+    private void FindPath(Cell playerPosition)
+    {
+        throw new NotImplementedException();
     }
 }
