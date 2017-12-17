@@ -14,6 +14,13 @@ public class Cell
     Vector2 position = new Vector2();
     bool hasFood = false, hasWall = false, isEmpty = true;
     GameObject wall, food;
+
+
+    //pathfinding
+    int hCost, gCost;
+    Cell parent;
+
+
     public bool IsWalkable
     {
         get
@@ -86,9 +93,62 @@ public class Cell
         }
     }
 
+    public int HCost
+    {
+        get
+        {
+            return hCost;
+        }
+
+        set
+        {
+            hCost = value;
+        }
+    }
+    public int GCost
+    {
+        get
+        {
+            return gCost;
+        }
+
+        set
+        {
+            gCost = value;
+        }
+    }
+    public int FCost
+    {
+        get
+        {
+            return HCost + GCost;
+        }
+    }
+
+    public List<Cell> Neighbours
+    {
+        get
+        {
+            return neighbours;
+        }
+    }
+
+    public Cell Parent
+    {
+        get
+        {
+            return parent;
+        }
+
+        set
+        {
+            parent = value;
+        }
+    }
+
     public void SetNeighbour(Cell cell)
     {
-        neighbours.Add(cell);
+        Neighbours.Add(cell);
     }
     public Vector3 GetPositionVector3()
     {

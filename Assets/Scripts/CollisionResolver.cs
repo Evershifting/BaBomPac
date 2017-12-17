@@ -28,7 +28,7 @@ public class CollisionResolver
         }
         if (collider.tag == "Enemy")
         {
-
+            Debug.Log("Boom");
         }
         if (collider.tag == "Bonus")
         {

@@ -150,6 +150,12 @@ public class FieldManager : MonoBehaviour
             return null;
         }
     }
+    public Cell GetCellFromPosition(Vector3 position)
+    {
+        Vector2 newPosition = new Vector2(position.x, position.z);
+        return GetCellFromPosition(newPosition);
+    }
+
     public bool IsCellWalkable(Vector2 target)
     {
         Cell targetCell = GetCellFromPosition(target);
@@ -168,5 +174,4 @@ public class FieldManager : MonoBehaviour
         Vector2 position = new Vector2(target.x, target.z);
         return IsCellWalkable(position);
     }
-
 }

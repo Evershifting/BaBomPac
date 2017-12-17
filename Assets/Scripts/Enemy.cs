@@ -24,7 +24,7 @@ public class Enemy : MonoBehaviour
     [Inject]
     FieldManager _fieldManager;
     [SerializeField]
-    Cell playerPosition;
+    Cell playerPosition, moveToPosition;
     float speed;
 
     bool isMoving;
@@ -50,18 +50,20 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("Azu");
             CheckPlayerPosition();
+            FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
         }
 
         if (!isMoving)
         {
             t = 0;
             previousPosition = transform.position;
-            FindPath(playerPosition);
+            CheckPlayerPosition();
+            moveToPosition = FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
             isMoving = true;
         }
         else
         {
-            if (playerPosition.IsWalkable)
+            if (moveToPosition.IsWalkable)
             {
                 Move();
             }
@@ -75,9 +77,9 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         t = Time.deltaTime * speed;
-        transform.position = Vector3.MoveTowards(transform.position, playerPosition.GetPositionVector3(), t);
+        transform.position = Vector3.MoveTowards(transform.position, moveToPosition.GetPositionVector3(), t);
 
-        if (transform.position == playerPosition.GetPositionVector3())
+        if (transform.position == moveToPosition.GetPositionVector3())
         {
             isMoving = false;
         }
@@ -94,8 +96,76 @@ public class Enemy : MonoBehaviour
         playerPosition = _fieldManager.GetCellFromPosition(new Vector2(x, y));
     }
 
-    private void FindPath(Cell playerPosition)
+
+    //zu
+    /// <summary>
+    /// Pathfinding
+    /// </summary>
+    /// <param name="_startPosition"></param>
+    /// <param name="_targetPosition"></param>
+    private Cell FindPath(Cell _startPosition, Cell _targetPosition)
     {
-        throw new NotImplementedException();
+
+        List<Cell> openSet = new List<Cell>();
+        HashSet<Cell> closedSet = new HashSet<Cell>();
+        openSet.Add(_startPosition);
+
+        while (openSet.Count > 0)
+        {
+            Cell currentCell = openSet[0];
+            for (int i = 1; i < openSet.Count; i++)
+                if (openSet[i].FCost < currentCell.FCost ||
+                    (openSet[i].FCost == currentCell.FCost && openSet[i].HCost < currentCell.HCost))
+                {
+                    currentCell = openSet[i];
+                }
+            openSet.Remove(currentCell);
+            closedSet.Add(currentCell);
+            if (currentCell == _targetPosition)
+            {
+                return RetracePath(_startPosition, _targetPosition); ;
+            }
+            foreach (Cell neighbour in currentCell.Neighbours)
+            {
+                if (!neighbour.IsWalkable || closedSet.Contains(neighbour))
+                {
+                    continue;
+                }
+                int newMovementCostToNeighbour = currentCell.GCost + GetDistance(currentCell, neighbour); //we can use "+ 1" instead of GetDistance(), but if later we'll have to add some "magic cells" etc. GetDistance will work better
+                if (newMovementCostToNeighbour < neighbour.GCost || !openSet.Contains(neighbour))
+                {
+                    neighbour.GCost = newMovementCostToNeighbour;
+                    neighbour.HCost = GetDistance(neighbour, _targetPosition);
+                    neighbour.Parent = currentCell;
+                    if (!openSet.Contains(neighbour))
+                    {
+                        openSet.Add(neighbour);
+                    }
+                }
+            }
+        }
+        Debug.Log("No Path!");
+        return null;
+    }
+
+    Cell RetracePath(Cell startCell, Cell endCell)
+    {
+        List<Cell> path = new List<Cell>();
+        Cell currentCell = endCell;
+
+        while (currentCell != startCell)
+        {
+            path.Add(currentCell);
+            currentCell = currentCell.Parent;
+        }
+        path.Reverse();
+        return path[0];
+    }
+
+    int GetDistance(Cell _start, Cell _end)
+    {
+        int distX = (int)Mathf.Abs(_start.Position.x - _end.Position.x);
+        int distY = (int)Mathf.Abs(_start.Position.y - _end.Position.y);
+        return distX + distY;
     }
 }
