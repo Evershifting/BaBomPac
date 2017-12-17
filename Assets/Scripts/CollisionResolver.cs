@@ -9,6 +9,10 @@ public class CollisionResolver
     private SignalCollision _signalCollision;
     [Inject]
     GameManager _gameManager;
+    [Inject]
+    Player _player;
+    [Inject]
+    FieldManager _fieldManager;
 
     public CollisionResolver(SignalCollision signalCollision)
     {
@@ -24,11 +28,13 @@ public class CollisionResolver
         if (collider.tag == "Food")
         {
             GameObject.Destroy(collider.gameObject);
+            _fieldManager.GetCellFromPosition(_player.transform.position).HasFood = false;
             _gameManager.FoodAmount--;
         }
         if (collider.tag == "Enemy")
         {
             Debug.Log("Boom");
+            _player.transform.position = new Vector3(1, 0, 1);
         }
         if (collider.tag == "Bonus")
         {

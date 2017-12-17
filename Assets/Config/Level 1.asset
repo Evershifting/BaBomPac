@@ -14,5 +14,5 @@ MonoBehaviour:
   sizeX: 10
   sizeY: 10
   enemyAmount: 3
-  error: 3
+  error: 2
   enemySpeed: 2

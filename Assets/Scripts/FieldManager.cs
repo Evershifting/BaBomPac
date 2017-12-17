@@ -112,6 +112,7 @@ public class FieldManager : MonoBehaviour
             Destroy(outerWallsParent.gameObject);
         outerWallsParent = new GameObject().transform;
         outerWallsParent.name = "outerWallsParent";
+        _enemySpawner.Clean();
     }
     public void SpawnEnemies(int value)
     {
@@ -133,7 +134,7 @@ public class FieldManager : MonoBehaviour
                 {
                     position = new Vector3(i, 0, j);
                     _enemySpawner.Add(position);
-                    cells[i * (_config.Levels[_gameManager.CurrentLevel].SizeY + 2) + j].IsWalkable = false;
+                    //cells[i * (_config.Levels[_gameManager.CurrentLevel].SizeY + 2) + j].IsWalkable = false;
                     amount--;
                 }
             }

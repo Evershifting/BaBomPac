@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour
         protected override void Reinitialize(float p1, /*Vector3 p2, */Enemy enemy)
         {
             enemy.Speed = p1;
+
         }
     }
 
@@ -43,6 +44,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public Cell MoveToPosition
+    {
+        get
+        {
+            return moveToPosition;
+        }
+
+        set
+        {
+            moveToPosition = value;
+        }
+    }
+
     private void Update()
     {
         //zu
@@ -50,7 +64,7 @@ public class Enemy : MonoBehaviour
         {
             CheckPlayerPosition();
             FindPath(_fieldManager.GetCellFromPosition(transform.position), _fieldManager.GetCellFromPosition(transform.position));
-            
+
         }
 
         if (!isMoving)
@@ -58,12 +72,13 @@ public class Enemy : MonoBehaviour
             t = 0;
             previousPosition = transform.position;
             CheckPlayerPosition();
-            moveToPosition = FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
-            isMoving = true;
+            MoveToPosition = FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
+            if (MoveToPosition != null)
+                isMoving = true;
         }
         else
         {
-            if (moveToPosition.IsWalkable)
+            if (MoveToPosition.IsWalkable)
             {
                 Move();
             }
@@ -77,9 +92,9 @@ public class Enemy : MonoBehaviour
     void Move()
     {
         t = Time.deltaTime * speed;
-        transform.position = Vector3.MoveTowards(transform.position, moveToPosition.GetPositionVector3(), t);
+        transform.position = Vector3.MoveTowards(transform.position, MoveToPosition.GetPositionVector3(), t);
 
-        if (transform.position == moveToPosition.GetPositionVector3())
+        if (transform.position == MoveToPosition.GetPositionVector3())
         {
             isMoving = false;
         }
@@ -110,7 +125,7 @@ public class Enemy : MonoBehaviour
     private Cell FindPath(Cell _startPosition, Cell _targetPosition)
     {
 
-        Heap<Cell> openSet = new Heap<Cell>(_config.Levels[_gameManager.CurrentLevel].SizeX* _config.Levels[_gameManager.CurrentLevel].SizeY);
+        Heap<Cell> openSet = new Heap<Cell>(_config.Levels[_gameManager.CurrentLevel].SizeX * _config.Levels[_gameManager.CurrentLevel].SizeY);
         HashSet<Cell> closedSet = new HashSet<Cell>();
         openSet.Add(_startPosition);
 
