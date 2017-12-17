@@ -39,8 +39,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1198429493784308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: 1}
-  m_LocalScale: {x: 0.6, y: 0.5, z: 0.6}
+  m_LocalPosition: {x: 3, y: 0, z: 3}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -110,11 +110,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a076e7d0a14834d8e3464ba2c8524c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0}
+  currentCell:
+    isWalkable: 1
+    isFlyable: 0
+    position: {x: 0, y: 0}
   speed: 3
   flying: 0
   isMoving: 0
-  previousPosition: {x: 0, y: 0, z: 0}
+  previousPosition: {x: 3, y: 0, z: 3}
   targetPosition: {x: 0, y: 0, z: 0}
   direction: 0
 --- !u!114 &114503155631154594

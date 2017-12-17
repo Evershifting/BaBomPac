@@ -12,8 +12,10 @@ public class Player : MonoBehaviour
     [Inject]
     readonly SignalCollision _signalCollision;
 
+    //zu
     [SerializeField]
-    Vector2 position;
+    Cell currentCell;
+    
     [SerializeField]
     float speed = 3f;
     [SerializeField]
@@ -50,6 +52,7 @@ public class Player : MonoBehaviour
 
         if (!isMoving)
         {
+
             switch (direction)
             {
                 case Direction.Stop:
@@ -94,18 +97,17 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        t += Time.deltaTime * speed;
+        t = Time.deltaTime * speed;
 
         //zu
-        transform.position = Vector3.Lerp(previousPosition, targetPosition, t);
-        //transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
+        //transform.position = Vector3.Lerp(previousPosition, targetPosition, t);
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
 
         if (transform.position == targetPosition)
         {
             isMoving = false;
             direction = Direction.Stop;
         }
-
     }
     private void OnTriggerEnter(Collider other)
     {

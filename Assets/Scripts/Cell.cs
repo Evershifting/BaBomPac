@@ -8,7 +8,7 @@ using Zenject;
 public class Cell
 {
     [SerializeField]
-    bool isWalkable, isFlyable;
+    bool isWalkable = true, isFlyable;
     List<Cell> neighbours = new List<Cell>();
     [SerializeField]
     Vector2 position = new Vector2();

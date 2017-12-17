@@ -8,7 +8,7 @@ public class MonoInstaller : MonoInstaller<MonoInstaller>
     public override void InstallBindings()
     {
         ////Interfaces
-        //Container.Bind<EnemySpawner>().AsSingle().NonLazy();
+        Container.Bind<EnemySpawner>().AsSingle().NonLazy();
 
         ////Classes
         Container.Bind<CollisionResolver>().AsSingle().NonLazy();
@@ -16,10 +16,10 @@ public class MonoInstaller : MonoInstaller<MonoInstaller>
         ////Factories
 
         //Pools
-        //Container.BindMemoryPool<Enemy, Enemy.Pool>().
-        //    WithInitialSize(3).
-        //    FromNewComponentOnNewPrefab(_config.Enemy).
-        //    UnderTransformGroup("Enemies");
+        Container.BindMemoryPool<Enemy, Enemy.Pool>().
+            WithInitialSize(3).
+            FromNewComponentOnNewPrefab(_config.Enemy).
+            UnderTransformGroup("Enemies");
 
         //Signals
         Container.DeclareSignal<SignalCollision>();

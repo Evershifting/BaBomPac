@@ -42,6 +42,7 @@ public class Enemy : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            Debug.Log("Azu");
             CheckPlayerPosition();
         }
     }

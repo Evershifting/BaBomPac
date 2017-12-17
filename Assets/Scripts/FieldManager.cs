@@ -10,8 +10,8 @@ public class FieldManager : MonoBehaviour
     Config _config;
     [Inject]
     GameManager _gameManager;
-    //[Inject]
-    //EnemySpawner _enemySpawner;
+    [Inject]
+    EnemySpawner _enemySpawner;
     [SerializeField]
     public List<Cell> cells;
 
@@ -41,8 +41,8 @@ public class FieldManager : MonoBehaviour
                 cells.Add(new Cell());
                 cells[i * (sizeY + 2) + j].Position = new Vector2(i, j);
                 x = i;
-                z = j;
                 y = 0;
+                z = j;
                 position = new Vector3(x, y, z);
                 if (i >= 1 && j >= 1 && i < sizeX + 1 && j < sizeY + 1)
                 {
@@ -55,11 +55,11 @@ public class FieldManager : MonoBehaviour
                     if (j % 2 == 0 && i % 2 == 0)
                     {
                         //zu
-                        //instance = Instantiate(_config.InnerWall);
-                        //instance.transform.position = position;
-                        //instance.transform.SetParent(innerWallsParent);
-                        //cells[i * (sizeY + 2) + j].IsWalkable = false;
-                        //cells[i * (sizeY + 2) + j].HasWall = true;
+                        instance = Instantiate(_config.InnerWall);
+                        instance.transform.position = position;
+                        instance.transform.SetParent(innerWallsParent);
+                        cells[i * (sizeY + 2) + j].IsWalkable = false;
+                        cells[i * (sizeY + 2) + j].HasWall = true;
                     }
                     else
                     {
@@ -91,7 +91,7 @@ public class FieldManager : MonoBehaviour
                 }
             }
         }
-        //SpawnEnemies(_config.Levels[_gameManager.CurrentLevel].EnemyAmount);
+        SpawnEnemies(_config.Levels[_gameManager.CurrentLevel].EnemyAmount);
     }
     public void CleanField()
     {
@@ -132,7 +132,7 @@ public class FieldManager : MonoBehaviour
                 if (cells[i * (_config.Levels[_gameManager.CurrentLevel].SizeY + 2) + j].IsWalkable)
                 {
                     position = new Vector3(i, 0, j);
-                    //_enemySpawner.Add(position);
+                    _enemySpawner.Add(position);
                     amount--;
                 }
             }
@@ -151,7 +151,7 @@ public class FieldManager : MonoBehaviour
     }
     public bool IsCellWalkable(Vector2 target)
     {
-        Cell targetCell = GetCellFromPosition(position);
+        Cell targetCell = GetCellFromPosition(target);
         if (targetCell != null)
         {
             return targetCell.IsWalkable;

@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 33812367146300682}
   - component: {fileID: 135016775133479806}
   - component: {fileID: 23655843387066608}
-  - component: {fileID: 114238904086970570}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -82,22 +81,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1059708131606332}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &114238904086970570
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1059708131606332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4edba6b300beb064a993236924efa8f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerPosition:
-    isWalkable: 0
-    isFlyable: 0
-    position: {x: 0, y: 0}
-    IsFlyable: 0
 --- !u!135 &135016775133479806
 SphereCollider:
   m_ObjectHideFlags: 1
