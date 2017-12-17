@@ -48,9 +48,9 @@ public class Enemy : MonoBehaviour
         //zu
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Azu");
             CheckPlayerPosition();
-            FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
+            FindPath(_fieldManager.GetCellFromPosition(transform.position), _fieldManager.GetCellFromPosition(transform.position));
+            
         }
 
         if (!isMoving)
@@ -94,6 +94,10 @@ public class Enemy : MonoBehaviour
         x = Mathf.Clamp(x, 1, _config.Levels[_gameManager.CurrentLevel].SizeX);
         y = Mathf.Clamp(y, 1, _config.Levels[_gameManager.CurrentLevel].SizeY);
         playerPosition = _fieldManager.GetCellFromPosition(new Vector2(x, y));
+        if (!playerPosition.IsWalkable || playerPosition == _fieldManager.GetCellFromPosition(transform.position))
+        {
+            CheckPlayerPosition();
+        }
     }
 
 
@@ -106,24 +110,17 @@ public class Enemy : MonoBehaviour
     private Cell FindPath(Cell _startPosition, Cell _targetPosition)
     {
 
-        List<Cell> openSet = new List<Cell>();
+        Heap<Cell> openSet = new Heap<Cell>(_config.Levels[_gameManager.CurrentLevel].SizeX* _config.Levels[_gameManager.CurrentLevel].SizeY);
         HashSet<Cell> closedSet = new HashSet<Cell>();
         openSet.Add(_startPosition);
 
         while (openSet.Count > 0)
         {
-            Cell currentCell = openSet[0];
-            for (int i = 1; i < openSet.Count; i++)
-                if (openSet[i].FCost < currentCell.FCost ||
-                    (openSet[i].FCost == currentCell.FCost && openSet[i].HCost < currentCell.HCost))
-                {
-                    currentCell = openSet[i];
-                }
-            openSet.Remove(currentCell);
+            Cell currentCell = openSet.RemoveFirst();
             closedSet.Add(currentCell);
             if (currentCell == _targetPosition)
             {
-                return RetracePath(_startPosition, _targetPosition); ;
+                return RetracePath(_startPosition, _targetPosition);
             }
             foreach (Cell neighbour in currentCell.Neighbours)
             {

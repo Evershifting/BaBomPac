@@ -5,7 +5,7 @@ using UnityEngine;
 using Zenject;
 
 [Serializable]
-public class Cell
+public class Cell : IHeapItem<Cell>
 {
     [SerializeField]
     bool isWalkable = true, isFlyable;
@@ -15,11 +15,9 @@ public class Cell
     bool hasFood = false, hasWall = false, isEmpty = true;
     GameObject wall, food;
 
-
     //pathfinding
-    int hCost, gCost;
+    int hCost, gCost, heapIndex;
     Cell parent;
-
 
     public bool IsWalkable
     {
@@ -124,7 +122,6 @@ public class Cell
             return HCost + GCost;
         }
     }
-
     public List<Cell> Neighbours
     {
         get
@@ -132,7 +129,6 @@ public class Cell
             return neighbours;
         }
     }
-
     public Cell Parent
     {
         get
@@ -145,6 +141,18 @@ public class Cell
             parent = value;
         }
     }
+    public int HeapIndex
+    {
+        get
+        {
+            return heapIndex;
+        }
+
+        set
+        {
+            heapIndex = value;
+        }
+    }
 
     public void SetNeighbour(Cell cell)
     {
@@ -155,5 +163,14 @@ public class Cell
         Vector3 position;
         position = new Vector3(this.position.x, 0, this.position.y);
         return position;
+    }
+    public int CompareTo(Cell other)
+    {
+        int result = FCost.CompareTo(other.FCost);
+        if (result == 0)
+        {
+            result = GCost.CompareTo(other.GCost);
+        }
+        return -result; //we need to return -result because higher F or G cost means that Cell has lower priority
     }
 }
