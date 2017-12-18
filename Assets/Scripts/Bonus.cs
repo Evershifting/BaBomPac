@@ -11,7 +11,7 @@ public class Bonus : MonoBehaviour
     MethodInfo mi;
     private void Start()
     {
-        mi = typeof(BonusManager).GetMethod(name);
+        mi = typeof(BonusEffects).GetMethod(name);
         Debug.Log(mi);
     }
     void Update()
@@ -24,6 +24,6 @@ public class Bonus : MonoBehaviour
     }
     public void Use()
     {
-        mi.Invoke(BonusManager.instance, null);
+        mi.Invoke(BonusEffects.instance, null);
     }
 }

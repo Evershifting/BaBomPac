@@ -20,41 +20,10 @@ public class FieldManager : MonoBehaviour
     GameObject instance;
     int x, y, z;
     Vector3 position;
-    Transform floorParent, innerWallsParent, outerWallsParent, foodParent;
+    Transform floorParent, innerWallsParent, outerWallsParent, foodParent, bonusParent, field;
 
 
-    //Bonuses
-    public int currentBonusAmount = 0, maximumBonusAmount = 3;
-    float spawnTimer = 1f;
-    float timer = 0f;
-    private void Update()
-    {
-        timer += Time.deltaTime;
-        if (timer > spawnTimer)
-        {
-            timer = 0f;
-            SpawnBonus();
-        }
-    }
-
-    private void SpawnBonus()
-    {
-        int randomRoll;
-        randomRoll = Random.Range(0, 100);
-        if (randomRoll < _config.SpawnChance && currentBonusAmount < maximumBonusAmount)
-        {
-            currentBonusAmount++;
-            GameObject bonus;
-            randomRoll = Random.Range(0, _config.Bonuses.Count);
-            bonus = Instantiate(_config.Bonuses[randomRoll]);
-            bonus.name = _config.Bonuses[randomRoll].name;
-            randomRoll = Random.Range(0, emptyCells.Count);
-            bonus.transform.position = emptyCells[randomRoll].GetPositionVector3();
-            bonus.transform.position += Vector3.up / 2f;
-            emptyCells.Remove(emptyCells[randomRoll]);
-        }
-    }
-
+ 
     public List<Cell> Cells
     {
         get
@@ -68,10 +37,36 @@ public class FieldManager : MonoBehaviour
         }
     }
 
+    public List<Cell> EmptyCells
+    {
+        get
+        {
+            return emptyCells;
+        }
+
+        set
+        {
+            emptyCells = value;
+        }
+    }
+
+    public Transform BonusParent
+    {
+        get
+        {
+            return bonusParent;
+        }
+
+        private set
+        {
+            bonusParent = value;
+        }
+    }
+
     private void Awake()
     {
         Cells = new List<Cell>();
-        emptyCells = new List<Cell>();
+        EmptyCells = new List<Cell>();
     }
     public void SpawnField(int sizeX, int sizeY)
     {
@@ -138,7 +133,7 @@ public class FieldManager : MonoBehaviour
                 }
                 if (Cells[i * (sizeY + 2) + j].IsWalkable)
                 {
-                    emptyCells.Add(Cells[i * (sizeY + 2) + j]);
+                    EmptyCells.Add(Cells[i * (sizeY + 2) + j]);
                 }
             }
         }
@@ -147,23 +142,32 @@ public class FieldManager : MonoBehaviour
     public void CleanField()
     {
         Cells = new List<Cell>();
-        emptyCells = new List<Cell>();
-        if (floorParent)
-            Destroy(floorParent.gameObject);
+        EmptyCells = new List<Cell>();
+
+        if (field)
+            Destroy(field.gameObject);
+        field = new GameObject().transform;
+        field.name = "field";
+
+        BonusParent = new GameObject().transform;
+        BonusParent.name = "bonusParent";
+        BonusParent.transform.parent = field;
+
         floorParent = new GameObject().transform;
         floorParent.name = "floorParent";
-        if (foodParent)
-            Destroy(foodParent.gameObject);
+        floorParent.transform.parent = field;
+
         foodParent = new GameObject().transform;
         foodParent.name = "foodParent";
-        if (innerWallsParent)
-            Destroy(innerWallsParent.gameObject);
+        foodParent.transform.parent = field;
+
         innerWallsParent = new GameObject().transform;
         innerWallsParent.name = "innerWallsParent";
-        if (outerWallsParent)
-            Destroy(outerWallsParent.gameObject);
+        innerWallsParent.transform.parent = field;
+
         outerWallsParent = new GameObject().transform;
         outerWallsParent.name = "outerWallsParent";
+        outerWallsParent.transform.parent = field;
         _enemySpawner.Clean();
     }
     public void SpawnEnemies(int value)

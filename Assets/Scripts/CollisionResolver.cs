@@ -14,6 +14,8 @@ public class CollisionResolver
     [Inject]
     FieldManager _fieldManager;
     [Inject]
+    BonusManager _bonusManager;
+    [Inject]
     EnemySpawner _enemySpawner;
 
     public CollisionResolver(SignalCollision signalCollision)
@@ -56,7 +58,8 @@ public class CollisionResolver
         }
         if (collider.tag == "Bonus")
         {
-            _fieldManager.currentBonusAmount--;
+            _bonusManager.currentBonusAmount--;
+            _fieldManager.EmptyCells.Add(_fieldManager.GetCellFromPosition(collider.transform.position));
             collider.GetComponent<Bonus>().Use();
             GameObject.Destroy(collider.gameObject);
         }

@@ -1,83 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 using Zenject;
 
-public class BonusManager : MonoBehaviour
-{
-    [Inject]
-    Player _player;
-    [Inject]
-    EnemySpawner _enemySpawner;
+public class BonusManager : MonoBehaviour {
+
     [Inject]
     Config _config;
     [Inject]
-    GameManager _gameManager;
-    public static BonusManager instance;
-    void Awake()
+    FieldManager _fieldManager;
+    public int currentBonusAmount = 0, maximumBonusAmount = 3;
+    float spawnTimer = 1f;
+    float timer = 0f;
+    private void Update()
     {
-        instance = this;
-    }
-    public void Ghost()
-    {
-        _player.IsFlying = true;
-    }
-    public void GhostBad()
-    {
-        foreach (Enemy enemy in _enemySpawner.Enemies)
+        timer += Time.deltaTime;
+        if (timer > spawnTimer)
         {
-            enemy.IsFlying = true;
-            enemy.GetComponent<Renderer>().material.color = Color.red / 2f + Color.blue / 2f;
+            timer = 0f;
+            SpawnBonus();
         }
     }
-    public void Haste()
+
+    private void SpawnBonus()
     {
-        _player.Speed *= 1.5f;
-    }
-    public void HasteBad()
-    {
-        foreach (Enemy enemy in _enemySpawner.Enemies)
+        int randomRoll;
+        randomRoll = Random.Range(0, 100);
+        if (randomRoll < _config.SpawnChance && currentBonusAmount < maximumBonusAmount)
         {
-            enemy.Speed *= 1.5f;
+            currentBonusAmount++;
+            GameObject bonus;
+            randomRoll = Random.Range(0, _config.Bonuses.Count);
+            bonus = Instantiate(_config.Bonuses[randomRoll]);
+            bonus.name = _config.Bonuses[randomRoll].name;
+            randomRoll = Random.Range(0, _fieldManager.EmptyCells.Count);
+            bonus.transform.position = _fieldManager.EmptyCells[randomRoll].GetPositionVector3();
+            bonus.transform.position += Vector3.up / 2f;
+            bonus.transform.parent = _fieldManager.BonusParent;
+            _fieldManager.EmptyCells.Remove(_fieldManager.EmptyCells[randomRoll]);
         }
     }
-    public void Freeze()
-    {
-        foreach (Enemy enemy in _enemySpawner.Enemies)
-        {
-            enemy.Speed *= 0.5f;
-        }
-    }
-    public void FreezeBad()
-    {
-        _player.Speed *= 0.5f;
-    }
-    public void HolyRandom()
-    {
-        if (_config.Bonuses.Count>1)
-        {
-            MethodInfo mi;
-            int random = Random.Range(0, _config.Bonuses.Count);
-            mi = typeof(BonusManager).GetMethod(_config.Bonuses[random].name);
-            mi.Invoke(this, null);
-            Debug.Log("Holy Random brings you " + _config.Bonuses[random].name);
-        }
-    }
-    public void Life()
-    {
-        _gameManager.Life++;
-    }
-    public void LifeBad()
-    {
-        _gameManager.Life--;
-    }
-    public void Shield()
-    {
-        _player.Shielded = true;
-    }
-    public void Flame()
-    {
-        _player.FlameCharges = 3;
-    }
+
 }
