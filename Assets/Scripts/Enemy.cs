@@ -24,10 +24,11 @@ public class Enemy : MonoBehaviour
     GameManager _gameManager;
     [Inject]
     FieldManager _fieldManager;
-    [SerializeField]
     Cell playerPosition, moveToPosition;
+    [SerializeField]
     float speed;
 
+    bool isFlying;
     bool isMoving;
     float t;
     Vector3 previousPosition;
@@ -41,6 +42,10 @@ public class Enemy : MonoBehaviour
         set
         {
             speed = value;
+            if (speed <= _config.MinEnemySpeed)
+            {
+                speed = _config.MinEnemySpeed;
+            }
         }
     }
 
@@ -57,16 +62,21 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void Update()
+    public bool IsFlying
     {
-        //zu
-        if (Input.GetKeyDown(KeyCode.Space))
+        get
         {
-            CheckPlayerPosition();
-            FindPath(_fieldManager.GetCellFromPosition(transform.position), _fieldManager.GetCellFromPosition(transform.position));
-
+            return isFlying;
         }
 
+        set
+        {
+            isFlying = value;
+        }
+    }
+
+    private void Update()
+    {
         if (!isMoving)
         {
             t = 0;
@@ -78,7 +88,8 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            if (MoveToPosition.IsWalkable)
+            if (MoveToPosition.IsWalkable
+                || (IsFlying && MoveToPosition.IsFlyable))
             {
                 Move();
             }
@@ -139,7 +150,7 @@ public class Enemy : MonoBehaviour
             }
             foreach (Cell neighbour in currentCell.Neighbours)
             {
-                if (!neighbour.IsWalkable || closedSet.Contains(neighbour))
+                if (closedSet.Contains(neighbour) || (!neighbour.IsWalkable && (!IsFlying && !neighbour.IsFlyable)))
                 {
                     continue;
                 }

@@ -11,15 +11,15 @@ public class Player : MonoBehaviour
     FieldManager _fieldManager;
     [Inject]
     readonly SignalCollision _signalCollision;
+    [Inject]
+    Config _config;
 
-    //zu
-    [SerializeField]
-    Cell currentCell;
-    
     [SerializeField]
     float speed = 3f;
     [SerializeField]
-    bool flying = false;
+    bool flying = false, shielded = false;
+    [SerializeField]
+    int flameCharges = 0;
     [SerializeField]
     bool isMoving = false;
     float t;
@@ -27,32 +27,88 @@ public class Player : MonoBehaviour
     Vector3 previousPosition, targetPosition;
     [SerializeField]
     Direction direction = Direction.Stop;
+
+    public bool Flying
+    {
+        get
+        {
+            return flying;
+        }
+
+        set
+        {
+            flying = value;
+        }
+    }
+
+    public float Speed
+    {
+        get
+        {
+            return speed;
+        }
+
+        set
+        {
+            speed = value;
+            if (speed <= _config.MinPlayerSpeed)
+            {
+                speed = _config.MinPlayerSpeed;
+            }
+        }
+    }
+
+    public bool Shielded
+    {
+        get
+        {
+            return shielded;
+        }
+
+        set
+        {
+            shielded = value;
+        }
+    }
+
+    public int FlameCharges
+    {
+        get
+        {
+            return flameCharges;
+        }
+
+        set
+        {
+            flameCharges = value;
+        }
+    }
+
     public enum Direction
     {
         Stop, Up, Down, Left, Right
     }
     private void Update()
     {
-        if (Input.GetAxis("Horizontal") < 0)
+        if (Input.GetKey(KeyCode.A))
         {
             direction = Direction.Left;
         }
-        if (Input.GetAxis("Horizontal") > 0)
+        if (Input.GetKey(KeyCode.D))
         {
             direction = Direction.Right;
         }
-        if (Input.GetAxis("Vertical") > 0)
+        if (Input.GetKey(KeyCode.W))
         {
             direction = Direction.Up;
         }
-        if (Input.GetAxis("Vertical") < 0)
+        if (Input.GetKey(KeyCode.S))
         {
             direction = Direction.Down;
         }
 
         if (!isMoving)
         {
-
             switch (direction)
             {
                 case Direction.Stop:
@@ -83,7 +139,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-            if (_fieldManager.IsCellWalkable(targetPosition))
+            if (_fieldManager.IsCellWalkable(targetPosition)
+                || (Flying && _fieldManager.IsCellFlyable(targetPosition)))
             {
                 Move();
             }
@@ -97,7 +154,7 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        t = Time.deltaTime * speed;
+        t = Time.deltaTime * Speed;
 
         //zu
         //transform.position = Vector3.Lerp(previousPosition, targetPosition, t);
@@ -108,6 +165,13 @@ public class Player : MonoBehaviour
             isMoving = false;
             direction = Direction.Stop;
         }
+    }
+
+    public void Respawn()
+    {
+        transform.position = new Vector3(1, 0, 1);
+        targetPosition = transform.position;
+        Speed = _config.PlayerSpeed;
     }
     private void OnTriggerEnter(Collider other)
     {

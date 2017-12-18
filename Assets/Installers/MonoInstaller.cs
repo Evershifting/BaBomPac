@@ -7,13 +7,13 @@ public class MonoInstaller : MonoInstaller<MonoInstaller>
     Config _config;
     public override void InstallBindings()
     {
-        ////Interfaces
+        //Interfaces
         Container.Bind<EnemySpawner>().AsSingle().NonLazy();
 
-        ////Classes
+        //Classes
         Container.Bind<CollisionResolver>().AsSingle().NonLazy();
 
-        ////Factories
+        //Factories
 
         //Pools
         Container.BindMemoryPool<Enemy, Enemy.Pool>().

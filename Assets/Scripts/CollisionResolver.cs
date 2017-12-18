@@ -13,6 +13,8 @@ public class CollisionResolver
     Player _player;
     [Inject]
     FieldManager _fieldManager;
+    [Inject]
+    EnemySpawner _enemySpawner;
 
     public CollisionResolver(SignalCollision signalCollision)
     {
@@ -33,12 +35,30 @@ public class CollisionResolver
         }
         if (collider.tag == "Enemy")
         {
-            Debug.Log("Boom");
-            _player.transform.position = new Vector3(1, 0, 1);
+            if (_player.FlameCharges > 0)
+            {
+                _player.FlameCharges--;
+                _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
+                _fieldManager.SpawnEnemies(1);
+            }
+            else if (_player.Shielded)
+            {
+                _player.Shielded = false;
+            }
+            else
+            {
+                _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
+                _fieldManager.SpawnEnemies(1);
+                _gameManager.Life--;
+                _player.Respawn();
+            }
+
         }
         if (collider.tag == "Bonus")
         {
-
+            _fieldManager.currentBonusAmount--;
+            collider.GetComponent<Bonus>().Use();
+            GameObject.Destroy(collider.gameObject);
         }
     }
 }

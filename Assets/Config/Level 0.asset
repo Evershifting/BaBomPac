@@ -13,6 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sizeX: 8
   sizeY: 8
-  enemyAmount: 5
+  enemyAmount: 1
   error: 4
   enemySpeed: 2
