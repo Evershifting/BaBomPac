@@ -9,6 +9,7 @@ public class MonoInstaller : MonoInstaller<MonoInstaller>
     {
         //Interfaces
         Container.Bind<EnemySpawner>().AsSingle().NonLazy();
+        Container.Bind<Pathfinder>().AsSingle().NonLazy();
 
         //Classes
         Container.Bind<CollisionResolver>().AsSingle().NonLazy();

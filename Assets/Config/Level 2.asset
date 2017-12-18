@@ -14,5 +14,6 @@ MonoBehaviour:
   sizeX: 13
   sizeY: 11
   enemyAmount: 4
+  bonusLimit: 5
   error: 0
   enemySpeed: 2

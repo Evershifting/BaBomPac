@@ -6,7 +6,7 @@ using UnityEngine;
 public class ConfigLevel : ScriptableObject
 {
     [SerializeField]
-    int sizeX, sizeY, enemyAmount;
+    int sizeX, sizeY, enemyAmount, bonusLimit;
     [SerializeField]
     [Tooltip("Error allowance for enemies' pathing")]
     int error;
@@ -46,6 +46,19 @@ public class ConfigLevel : ScriptableObject
         get
         {
             return error;
+        }
+    }
+
+    public int BonusLimit
+    {
+        get
+        {
+            return bonusLimit;
+        }
+
+        set
+        {
+            bonusLimit = value;
         }
     }
 }

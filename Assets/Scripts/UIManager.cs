@@ -27,7 +27,7 @@ public class UIManager : MonoBehaviour
         {
             flameChargesText.enabled = true;
             flameIcon.enabled = true;
-            flameChargesText.text = _player.FlameCharges.ToString();
+            flameChargesText.text = "x" + _player.FlameCharges.ToString();
         }
         shieldIcon.enabled = _player.Shielded;
 

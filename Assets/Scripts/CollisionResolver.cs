@@ -62,7 +62,7 @@ public class CollisionResolver
         }
         if (collider.tag == "Bonus")
         {
-            _bonusManager.currentBonusAmount--;
+            _bonusManager.CurrentBonusAmount--;
             _fieldManager.EmptyCells.Add(_fieldManager.GetCellFromPosition(collider.transform.position));
             collider.GetComponent<Bonus>().Use();
             GameObject.Destroy(collider.gameObject);
