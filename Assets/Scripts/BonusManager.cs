@@ -21,13 +21,14 @@ public class BonusManager : MonoBehaviour
     }
     public void Ghost()
     {
-        _player.Flying = true;
+        _player.IsFlying = true;
     }
     public void GhostBad()
     {
         foreach (Enemy enemy in _enemySpawner.Enemies)
         {
             enemy.IsFlying = true;
+            enemy.GetComponent<Renderer>().material.color = Color.red / 2f + Color.blue / 2f;
         }
     }
     public void Haste()

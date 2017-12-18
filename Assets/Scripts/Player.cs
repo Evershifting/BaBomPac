@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     Direction direction = Direction.Stop;
 
-    public bool Flying
+    public bool IsFlying
     {
         get
         {
@@ -140,7 +140,7 @@ public class Player : MonoBehaviour
         else
         {
             if (_fieldManager.IsCellWalkable(targetPosition)
-                || (Flying && _fieldManager.IsCellFlyable(targetPosition)))
+                || (IsFlying && _fieldManager.IsCellFlyable(targetPosition)))
             {
                 Move();
             }
@@ -172,6 +172,9 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(1, 0, 1);
         targetPosition = transform.position;
         Speed = _config.PlayerSpeed;
+        Shielded = false;
+        FlameCharges = 0;
+        IsFlying = false;
     }
     private void OnTriggerEnter(Collider other)
     {

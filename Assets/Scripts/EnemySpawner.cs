@@ -29,6 +29,8 @@ public class EnemySpawner
         enemy.transform.position = position;
         enemy.MoveToPosition = _fieldManager.GetCellFromPosition(position);
         enemy.Speed *= (1 + Random.Range(-0.2f, 0.2f));
+        enemy.GetComponent<Renderer>().material.color = Color.red;
+        enemy.IsFlying = false;
         Enemies.Add(enemy);
     }
     public void Remove(Enemy enemy)
