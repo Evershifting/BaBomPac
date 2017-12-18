@@ -40,7 +40,7 @@ public class FieldManager : MonoBehaviour
     private void SpawnBonus()
     {
         int randomRoll;
-        randomRoll = Random.Range(0, (int)_config.SpawnChance);
+        randomRoll = Random.Range(0, 100);
         if (randomRoll < _config.SpawnChance && currentBonusAmount < maximumBonusAmount)
         {
             currentBonusAmount++;

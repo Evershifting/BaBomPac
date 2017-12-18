@@ -15,7 +15,8 @@ public class Enemy : MonoBehaviour
 
         }
     }
-
+    [Inject]
+    EnemySpawner _enemySpawner;
     [Inject]
     Player _player;
     [Inject]
@@ -48,7 +49,6 @@ public class Enemy : MonoBehaviour
             }
         }
     }
-
     public Cell MoveToPosition
     {
         get
@@ -61,7 +61,6 @@ public class Enemy : MonoBehaviour
             moveToPosition = value;
         }
     }
-
     public bool IsFlying
     {
         get
@@ -82,14 +81,13 @@ public class Enemy : MonoBehaviour
             t = 0;
             previousPosition = transform.position;
             CheckPlayerPosition();
-            MoveToPosition = FindPath(_fieldManager.GetCellFromPosition(transform.position), playerPosition);
-            if (MoveToPosition != null)
+            MoveToPosition = FindPath(this, _fieldManager.GetCellFromPosition(transform.position), playerPosition);
+            if (MoveToPosition != null /*&& PositionAvailable()*/)
                 isMoving = true;
         }
         else
         {
-            if (MoveToPosition.IsWalkable
-                || (IsFlying && MoveToPosition.IsFlyable))
+            if (MoveToPosition.IsWalkable || (IsFlying && MoveToPosition.IsFlyable))
             {
                 Move();
             }
@@ -98,6 +96,21 @@ public class Enemy : MonoBehaviour
                 isMoving = false;
             }
         }
+    }
+
+    private bool PositionAvailable()
+    {
+        bool movePossible = true;
+        foreach (Enemy enemy in _enemySpawner.Enemies)
+        {
+            if (enemy.MoveToPosition == MoveToPosition && enemy != this)
+            {
+                movePossible = false;
+                Debug.Log("Move not possible");
+                break;
+            }
+        }
+        return movePossible;
     }
 
     void Move()
@@ -120,20 +133,23 @@ public class Enemy : MonoBehaviour
         x = Mathf.Clamp(x, 1, _config.Levels[_gameManager.CurrentLevel].SizeX);
         y = Mathf.Clamp(y, 1, _config.Levels[_gameManager.CurrentLevel].SizeY);
         playerPosition = _fieldManager.GetCellFromPosition(new Vector2(x, y));
-        if (!playerPosition.IsWalkable || playerPosition == _fieldManager.GetCellFromPosition(transform.position))
+        if (!isFlying && !playerPosition.IsWalkable) //player is hiding in wall
         {
-            CheckPlayerPosition();
+            playerPosition = _fieldManager.GetCellFromPosition(transform.position);
+        }
+        else
+        if ((IsFlying && !playerPosition.IsFlyable) ||
+            playerPosition == _fieldManager.GetCellFromPosition(transform.position))
+        {
+            //CheckPlayerPosition();
+            playerPosition = _fieldManager.GetCellFromPosition(transform.position);
         }
     }
 
 
     //zu
-    /// <summary>
-    /// Pathfinding
-    /// </summary>
-    /// <param name="_startPosition"></param>
-    /// <param name="_targetPosition"></param>
-    private Cell FindPath(Cell _startPosition, Cell _targetPosition)
+    //Pathfinding
+    private Cell FindPath(Enemy enemy, Cell _startPosition, Cell _targetPosition)
     {
 
         Heap<Cell> openSet = new Heap<Cell>(_config.Levels[_gameManager.CurrentLevel].SizeX * _config.Levels[_gameManager.CurrentLevel].SizeY);
@@ -146,11 +162,13 @@ public class Enemy : MonoBehaviour
             closedSet.Add(currentCell);
             if (currentCell == _targetPosition)
             {
-                return RetracePath(_startPosition, _targetPosition);
+                return RetracePath(enemy, _startPosition, _targetPosition);
             }
             foreach (Cell neighbour in currentCell.Neighbours)
             {
-                if (closedSet.Contains(neighbour) || (!neighbour.IsWalkable && (!IsFlying && !neighbour.IsFlyable)))
+                if (closedSet.Contains(neighbour) ||
+                (!enemy.IsFlying && !neighbour.IsWalkable) ||
+                (enemy.IsFlying && !neighbour.IsFlyable))
                 {
                     continue;
                 }
@@ -170,8 +188,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("No Path!");
         return null;
     }
-
-    Cell RetracePath(Cell startCell, Cell endCell)
+    Cell RetracePath(Enemy enemy, Cell startCell, Cell endCell)
     {
         List<Cell> path = new List<Cell>();
         Cell currentCell = endCell;
@@ -182,9 +199,11 @@ public class Enemy : MonoBehaviour
             currentCell = currentCell.Parent;
         }
         path.Reverse();
-        return path[0];
+        if (path.Count > 0)
+            return path[0];
+        else
+            return _fieldManager.GetCellFromPosition(enemy.transform.position);
     }
-
     int GetDistance(Cell _start, Cell _end)
     {
         int distX = (int)Mathf.Abs(_start.Position.x - _end.Position.x);
