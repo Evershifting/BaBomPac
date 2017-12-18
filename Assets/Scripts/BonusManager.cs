@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-public class BonusManager : MonoBehaviour {
+public class BonusManager : MonoBehaviour
+{
 
     [Inject]
     Config _config;
@@ -26,7 +27,7 @@ public class BonusManager : MonoBehaviour {
     {
         int randomRoll;
         randomRoll = Random.Range(0, 100);
-        if (randomRoll < _config.SpawnChance && currentBonusAmount < maximumBonusAmount)
+        if (randomRoll < _config.SpawnChance && _config.Bonuses.Count > 0 && currentBonusAmount < maximumBonusAmount)
         {
             currentBonusAmount++;
             GameObject bonus;

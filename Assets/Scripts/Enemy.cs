@@ -183,7 +183,6 @@ public class Enemy : MonoBehaviour
                 }
             }
         }
-        Debug.Log("No Path!");
         return null;
     }
     Cell RetracePath(Enemy enemy, Cell startCell, Cell endCell)

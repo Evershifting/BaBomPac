@@ -16,14 +16,30 @@ public class GameManager : MonoBehaviour
     FieldManager _fieldManager;
     [Inject]
     UIManager _UIManager;
+    [Inject]
+    Player _player;
     [SerializeField]
     int currentLevel, foodAmount, life;
+
+    bool isGameOver = false;
 
     public int CurrentLevel
     {
         get
         {
             return currentLevel;
+        }
+        set
+        {
+            currentLevel = value;
+            if (currentLevel >= _config.Levels.Count)
+            {
+                GameOver(true);
+            }
+            else
+            {
+                StartLevel(currentLevel);
+            }
         }
     }
     public int FoodAmount
@@ -39,8 +55,7 @@ public class GameManager : MonoBehaviour
             foodAmount = value;
             if (foodAmount <= 0)
             {
-                currentLevel++;
-                StartLevel(currentLevel);
+                CurrentLevel++;
             }
         }
     }
@@ -53,11 +68,11 @@ public class GameManager : MonoBehaviour
 
         set
         {
-            _UIManager.UpdateUI();
             life = value;
+            _UIManager.UpdateUI();
             if (life <= 0)
             {
-                Debug.Log("GameOver");
+                GameOver(false);
             }
         }
     }
@@ -66,6 +81,26 @@ public class GameManager : MonoBehaviour
     {
         Life = _config.BaseAmountOfLifes;
         StartLevel(currentLevel);
+    }
+    private void Update()
+    {
+        if (isGameOver)
+        {
+            if (Input.anyKeyDown)
+            {
+                isGameOver = false;
+                _UIManager.GameOver(true);
+                _player.gameObject.SetActive(true);
+                StartLevel(0);
+            }
+        }
+    }
+    void GameOver(bool gameWon)
+    {
+        _player.gameObject.SetActive(false);
+        _fieldManager.CleanField();
+        isGameOver = true;
+        _UIManager.GameOver(gameWon);
     }
     void StartLevel(int level)
     {

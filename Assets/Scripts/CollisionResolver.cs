@@ -55,6 +55,7 @@ public class CollisionResolver
                 _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
                 _fieldManager.SpawnEnemies(1);
                 _gameManager.Life--;
+                _UIManager.UpdateUI();
                 _player.Respawn();
             }
 
