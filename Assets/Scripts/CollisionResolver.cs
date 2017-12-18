@@ -17,6 +17,8 @@ public class CollisionResolver
     BonusManager _bonusManager;
     [Inject]
     EnemySpawner _enemySpawner;
+    [Inject]
+    UIManager _UIManager;
 
     public CollisionResolver(SignalCollision signalCollision)
     {
@@ -32,7 +34,6 @@ public class CollisionResolver
         if (collider.tag == "Food")
         {
             GameObject.Destroy(collider.gameObject);
-            _fieldManager.GetCellFromPosition(_player.transform.position).HasFood = false;
             _gameManager.FoodAmount--;
         }
         if (collider.tag == "Enemy")
@@ -42,10 +43,12 @@ public class CollisionResolver
                 _player.FlameCharges--;
                 _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
                 _fieldManager.SpawnEnemies(1);
+                _UIManager.UpdateUI();
             }
             else if (_player.Shielded)
             {
                 _player.Shielded = false;
+                _UIManager.UpdateUI();
             }
             else
             {

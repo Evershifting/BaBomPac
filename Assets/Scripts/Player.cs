@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     bool isMoving = false;
     float t;
     [SerializeField]
-    Vector3 previousPosition, targetPosition;
+    Vector3 targetPosition;
     [SerializeField]
     Direction direction = Direction.Stop;
 
@@ -40,7 +40,6 @@ public class Player : MonoBehaviour
             flying = value;
         }
     }
-
     public float Speed
     {
         get
@@ -57,7 +56,6 @@ public class Player : MonoBehaviour
             }
         }
     }
-
     public bool Shielded
     {
         get
@@ -70,7 +68,6 @@ public class Player : MonoBehaviour
             shielded = value;
         }
     }
-
     public int FlameCharges
     {
         get
@@ -135,7 +132,6 @@ public class Player : MonoBehaviour
                     break;
             }
             t = 0;
-            previousPosition = transform.position;
         }
         else
         {
@@ -155,9 +151,6 @@ public class Player : MonoBehaviour
     void Move()
     {
         t = Time.deltaTime * Speed;
-
-        //zu
-        //transform.position = Vector3.Lerp(previousPosition, targetPosition, t);
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, t);
 
         if (transform.position == targetPosition)

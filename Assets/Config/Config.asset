@@ -21,9 +21,10 @@ MonoBehaviour:
   food: {fileID: 1276187894343102, guid: c152c8e7e87f35d47b4abd0b1b4a84a2, type: 2}
   enemy: {fileID: 1059708131606332, guid: b8c5734f662f6424b85b7dd26df0cc46, type: 2}
   player: {fileID: 1198429493784308, guid: 1a618ecf16b491f45acba0a5b08bae3d, type: 2}
-  spawnChance: 15
+  spawnChance: 50
   bonuses:
-  - {fileID: 1788711083806564, guid: 9d9ec873151d96149a844f11e8c7aec0, type: 2}
+  - {fileID: 1788711083806564, guid: 1c1d1480b3a5c9243ad442a6fe6bc739, type: 2}
+  - {fileID: 1788711083806564, guid: 4372b05a3765cb94281198209ba968f8, type: 2}
   basePlayerSpeed: 5
   minEnemySpeed: 0.75
   minPlayerSpeed: 1

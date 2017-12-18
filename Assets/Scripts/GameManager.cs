@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     Config _config;
     [Inject]
     FieldManager _fieldManager;
+    [Inject]
+    UIManager _UIManager;
     [SerializeField]
     int currentLevel, foodAmount, life;
 
@@ -24,7 +26,6 @@ public class GameManager : MonoBehaviour
             return currentLevel;
         }
     }
-
     public int FoodAmount
     {
         get
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
 
         set
         {
+            _UIManager.UpdateUI();
             foodAmount = value;
             if (foodAmount <= 0)
             {
@@ -42,7 +44,6 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
     public int Life
     {
         get
@@ -52,8 +53,9 @@ public class GameManager : MonoBehaviour
 
         set
         {
+            _UIManager.UpdateUI();
             life = value;
-            if (life <=0)
+            if (life <= 0)
             {
                 Debug.Log("GameOver");
             }
@@ -65,12 +67,9 @@ public class GameManager : MonoBehaviour
         Life = _config.BaseAmountOfLifes;
         StartLevel(currentLevel);
     }
-
     void StartLevel(int level)
     {
         _fieldManager.SpawnField(_config.Levels[level].SizeX, _config.Levels[CurrentLevel].SizeY);
+        _UIManager.UpdateUI();
     }
-
-
-
 }

@@ -12,7 +12,6 @@ public class Bonus : MonoBehaviour
     private void Start()
     {
         mi = typeof(BonusEffects).GetMethod(name);
-        Debug.Log(mi);
     }
     void Update()
     {

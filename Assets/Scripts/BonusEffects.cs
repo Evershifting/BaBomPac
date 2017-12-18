@@ -14,6 +14,8 @@ public class BonusEffects : MonoBehaviour
     Config _config;
     [Inject]
     GameManager _gameManager;
+    [Inject]
+    UIManager _UIManager;
     public static BonusEffects instance;
     void Awake()
     {
@@ -75,9 +77,11 @@ public class BonusEffects : MonoBehaviour
     public void Shield()
     {
         _player.Shielded = true;
+        _UIManager.UpdateUI();
     }
     public void Flame()
     {
         _player.FlameCharges = 3;
+        _UIManager.UpdateUI();
     }
 }

@@ -8,12 +8,10 @@ using Zenject;
 public class Cell : IHeapItem<Cell>
 {
     [SerializeField]
-    bool isWalkable = true, isFlyable;
+    bool isWalkable, isFlyable;
     List<Cell> neighbours = new List<Cell>();
     [SerializeField]
     Vector2 position = new Vector2();
-    bool hasFood = false, hasWall = false, isEmpty = true;
-    GameObject wall, food;
 
     //pathfinding
     int hCost, gCost, heapIndex;
@@ -40,42 +38,6 @@ public class Cell : IHeapItem<Cell>
         set
         {
             isFlyable = value;
-        }
-    }
-    public bool HasFood
-    {
-        get
-        {
-            return hasFood;
-        }
-
-        set
-        {
-            hasFood = value;
-        }
-    }
-    public bool HasWall
-    {
-        get
-        {
-            return hasWall;
-        }
-
-        set
-        {
-            hasWall = value;
-        }
-    }
-    public bool IsEmpty
-    {
-        get
-        {
-            return isEmpty;
-        }
-
-        set
-        {
-            isEmpty = value;
         }
     }
     public Vector2 Position

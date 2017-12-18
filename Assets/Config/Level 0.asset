@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5a2150141c1e88429d835eeecfe22a2, type: 3}
   m_Name: Level 0
   m_EditorClassIdentifier: 
-  sizeX: 9
-  sizeY: 9
-  enemyAmount: 5
-  error: 0
+  sizeX: 8
+  sizeY: 8
+  enemyAmount: 2
+  error: 4
   enemySpeed: 2

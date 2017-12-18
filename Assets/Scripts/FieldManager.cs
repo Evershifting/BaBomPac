@@ -22,8 +22,6 @@ public class FieldManager : MonoBehaviour
     Vector3 position;
     Transform floorParent, innerWallsParent, outerWallsParent, foodParent, bonusParent, field;
 
-
- 
     public List<Cell> Cells
     {
         get
@@ -36,7 +34,6 @@ public class FieldManager : MonoBehaviour
             cells = value;
         }
     }
-
     public List<Cell> EmptyCells
     {
         get
@@ -49,7 +46,6 @@ public class FieldManager : MonoBehaviour
             emptyCells = value;
         }
     }
-
     public Transform BonusParent
     {
         get
@@ -70,12 +66,10 @@ public class FieldManager : MonoBehaviour
     }
     public void SpawnField(int sizeX, int sizeY)
     {
+        SetupCamera(sizeX + 2, sizeY + 2);
         CleanField();
-        //Camera setup
-        Camera.main.transform.position = new Vector3(sizeX / 2, 10, sizeY / 2 /*zu*/+ 0.5f); //10 is comfortable height
-        Camera.main.orthographicSize = Mathf.Max(sizeY, sizeX) / 2 + 2; //+2 to stop borders clamping to camera field of view
 
-        //Field generation with filling lists of each cell's neighbours
+        //Field generation and filling lists of each cell's neighbours
         for (int i = 0; i < sizeX + 2; i++)
         {
             for (int j = 0; j < sizeY + 2; j++)
@@ -96,19 +90,16 @@ public class FieldManager : MonoBehaviour
 
                     if (j % 2 == 0 && i % 2 == 0)
                     {
-                        //zu
                         instance = Instantiate(_config.InnerWall);
                         instance.transform.position = position;
                         instance.transform.SetParent(innerWallsParent);
                         Cells[i * (sizeY + 2) + j].IsWalkable = false;
-                        Cells[i * (sizeY + 2) + j].HasWall = true;
                     }
                     else
                     {
                         instance = Instantiate(_config.Food);
                         instance.transform.position = position;
                         instance.transform.SetParent(foodParent);
-                        Cells[i * (sizeY + 2) + j].HasFood = true;
                         _gameManager.FoodAmount++;
                     }
                     //Filling neighbours of each cell
@@ -139,6 +130,11 @@ public class FieldManager : MonoBehaviour
         }
         SpawnEnemies(_config.Levels[_gameManager.CurrentLevel].EnemyAmount);
     }
+    void SetupCamera(int sizeX, int sizeY)
+    {
+        Camera.main.transform.position = new Vector3(sizeX / 2, 10, sizeY / 2); //10 is comfortable height
+        Camera.main.orthographicSize = Mathf.Max(sizeY, sizeX) / 2 + 2; //+2 to stop borders clamping to camera field of view
+    }
     public void CleanField()
     {
         Cells = new List<Cell>();
@@ -148,6 +144,7 @@ public class FieldManager : MonoBehaviour
             Destroy(field.gameObject);
         field = new GameObject().transform;
         field.name = "field";
+        field.transform.position = new Vector3(-1, 0, -1);
 
         BonusParent = new GameObject().transform;
         BonusParent.name = "bonusParent";
@@ -168,6 +165,7 @@ public class FieldManager : MonoBehaviour
         outerWallsParent = new GameObject().transform;
         outerWallsParent.name = "outerWallsParent";
         outerWallsParent.transform.parent = field;
+
         _enemySpawner.Clean();
     }
     public void SpawnEnemies(int value)
@@ -190,14 +188,11 @@ public class FieldManager : MonoBehaviour
                 {
                     position = new Vector3(i, 0, j);
                     _enemySpawner.Add(position);
-                    //cells[i * (_config.Levels[_gameManager.CurrentLevel].SizeY + 2) + j].IsWalkable = false;
                     amount--;
                 }
             }
         }
     }
-
-
 
     public Cell GetCellFromPosition(Vector2 position)
     {
@@ -215,7 +210,6 @@ public class FieldManager : MonoBehaviour
         Vector2 newPosition = new Vector2(position.x, position.z);
         return GetCellFromPosition(newPosition);
     }
-
     public bool IsCellWalkable(Vector2 target)
     {
         Cell targetCell = GetCellFromPosition(target);

@@ -32,7 +32,6 @@ public class Enemy : MonoBehaviour
     bool isFlying;
     bool isMoving;
     float t;
-    Vector3 previousPosition;
     public float Speed
     {
         get
@@ -79,7 +78,6 @@ public class Enemy : MonoBehaviour
         if (!isMoving)
         {
             t = 0;
-            previousPosition = transform.position;
             CheckPlayerPosition();
             MoveToPosition = FindPath(this, _fieldManager.GetCellFromPosition(transform.position), playerPosition);
             if (MoveToPosition != null /*&& PositionAvailable()*/)
