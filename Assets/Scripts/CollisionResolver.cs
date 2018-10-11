@@ -43,21 +43,19 @@ public class CollisionResolver
                 _player.FlameCharges--;
                 _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
                 _fieldManager.SpawnEnemies(1);
-                _UIManager.UpdateUI();
             }
             else if (_player.Shielded)
             {
                 _player.Shielded = false;
-                _UIManager.UpdateUI();
             }
             else
             {
                 _enemySpawner.Remove(collider.gameObject.GetComponent<Enemy>());
                 _fieldManager.SpawnEnemies(1);
                 _gameManager.Life--;
-                _UIManager.UpdateUI();
                 _player.Respawn();
             }
+            _UIManager.UpdateUI();
 
         }
         if (collider.tag == "Bonus")
@@ -66,6 +64,7 @@ public class CollisionResolver
             _fieldManager.EmptyCells.Add(_fieldManager.GetCellFromPosition(collider.transform.position));
             collider.GetComponent<Bonus>().Use();
             GameObject.Destroy(collider.gameObject);
+            _UIManager.UpdateUI();
         }
     }
 }

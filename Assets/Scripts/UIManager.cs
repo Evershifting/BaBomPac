@@ -20,16 +20,16 @@ public class UIManager : MonoBehaviour
         lifeText.text = _gameManager.Life.ToString();
         if (_player.FlameCharges <= 0)
         {
-            flameChargesText.enabled = false;
-            flameIcon.enabled = false;
+            flameChargesText.gameObject.SetActive(false);
+            flameIcon.gameObject.SetActive(false);
         }
         else
         {
-            flameChargesText.enabled = true;
-            flameIcon.enabled = true;
+            flameChargesText.gameObject.SetActive(true);
+            flameIcon.gameObject.SetActive(true);
             flameChargesText.text = "x" + _player.FlameCharges.ToString();
         }
-        shieldIcon.enabled = _player.Shielded;
+        shieldIcon.gameObject.SetActive(_player.Shielded);
 
     }
     public void GameOver(bool gameWon)

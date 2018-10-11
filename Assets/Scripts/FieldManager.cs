@@ -95,7 +95,7 @@ public class FieldManager : MonoBehaviour
                         instance.transform.SetParent(innerWallsParent);
                         Cells[i * (sizeY + 2) + j].IsWalkable = false;
                     }
-                    else
+                    else if (!(i == 1 && j == 1))
                     {
                         instance = Instantiate(_config.Food);
                         instance.transform.position = position;

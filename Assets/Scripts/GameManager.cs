@@ -91,7 +91,8 @@ public class GameManager : MonoBehaviour
                 isGameOver = false;
                 _UIManager.GameOver(true);
                 _player.gameObject.SetActive(true);
-                StartLevel(0);
+                CurrentLevel = 0;
+                Life = _config.BaseAmountOfLifes;
             }
         }
     }
@@ -104,7 +105,9 @@ public class GameManager : MonoBehaviour
     }
     void StartLevel(int level)
     {
+        foodAmount = 0;
         _fieldManager.SpawnField(_config.Levels[level].SizeX, _config.Levels[CurrentLevel].SizeY);
+        _player.Respawn();
         _UIManager.UpdateUI();
     }
 }
